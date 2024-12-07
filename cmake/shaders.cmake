@@ -1,6 +1,6 @@
 function(compile_shader SOURCE_FILE)
     set(SOURCE_PATH ${PROJECT_SOURCE_DIR}/${SOURCE_FILE})
-    set(OUTPUT_PATH ${CMAKE_BINARY_DIR}/${SOURCE_FILE}.spv)
+    set(OUTPUT_PATH ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${SOURCE_FILE}.spv)
 
     add_custom_command(
         OUTPUT ${OUTPUT_PATH}

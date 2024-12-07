@@ -10,7 +10,8 @@ To setup this project for VS Code, install the [CMake Tools](https://marketplace
 "cmake.configureArgs": [
     "-DCMAKE_TOOLCHAIN_FILE={Vcpkg Path}\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
     "-DGLSL_COMPILER=C:\\Dev\\VulkanSDK\\1.3.296.0\\Bin\\glslangValidator.exe"
-]
+],
+"cmake.generator": "Ninja"
 ```
 
 ### Intelisense
