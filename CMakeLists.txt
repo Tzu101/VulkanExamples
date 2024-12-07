@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 project(VulkanTest VERSION 1.0)
 
 # Specify the C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add the executable target
@@ -13,6 +13,13 @@ add_executable(VulkanTest main.cpp)
 target_include_directories(VulkanTest PRIVATE ${PROJECT_SOURCE_DIR}/examples)
 target_sources(VulkanTest PRIVATE
     examples/blank_window.cpp
+)
+
+# Libs
+target_include_directories(VulkanTest PRIVATE ${PROJECT_SOURCE_DIR}/libs)
+target_sources(VulkanTest PRIVATE
+    libs/gui/window.cpp
+    libs/gui/app.cpp
 )
 
 # Packages

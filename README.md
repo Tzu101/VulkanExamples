@@ -24,8 +24,11 @@ As well as `.vscode/c_cpp_properties.json` for local file intelisense:
     {
         "name": "Win32",
         "includePath": [
+            "${default}",
+            "${workspaceFolder}/libs",
             "${workspaceFolder}/examples"
-        ]
+        ],
+        "cppStandard": "c++20"
     }
 ],
 "version": 4

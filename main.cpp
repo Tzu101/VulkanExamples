@@ -1,7 +1,10 @@
 #include <iostream>
 
-#include "examples.h"
+//#include "gui/app.h"
+#include "blank_window.h"
 
 int main() {
-    std::cout << blank_window() << " extensions supported\n";
+    BlankWindow app("Test");
+    app.run();
+    //std::cout << blank_window() << " extensions supported\n";
 }
