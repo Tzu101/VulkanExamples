@@ -9,6 +9,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Add the executable target
 add_executable(VulkanTest main.cpp)
 
+# Examples
+target_include_directories(VulkanTest PRIVATE ${PROJECT_SOURCE_DIR}/examples)
+target_sources(VulkanTest PRIVATE
+    examples/blank_window.cpp
+)
+
 # Packages
 find_package(Vulkan REQUIRED)
 target_link_libraries(VulkanTest PRIVATE Vulkan::Vulkan)

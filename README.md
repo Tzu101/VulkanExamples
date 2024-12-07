@@ -14,3 +14,7 @@ To setup this project for VS Code, install the [C/C++](https://marketplace.visua
 ]
 ```
 
+## Resources
+Some resources that were helpfull:
+- [https://vulkan-tutorial.com/Introduction](https://vulkan-tutorial.com/Introduction)
+- [https://www.youtube.com/playlist?list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR](https://www.youtube.com/playlist?list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR)
