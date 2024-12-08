@@ -11,13 +11,13 @@ App::App(const std::string &name)
 void App::run() {
     while (not window.closed()) {
         glfwPollEvents();
-        update();
+        draw();
     }
 
     vkDeviceWaitIdle(device.device());
 }
 
-void App::update() {
+void App::draw() {
     std::cout << "App update" << std::endl;
 }
 } // gui

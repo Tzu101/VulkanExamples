@@ -49,3 +49,4 @@ For GLSL intelisense install the [GLSL Lint](https://marketplace.visualstudio.co
 Some resources that were helpfull:
 - [https://vulkan-tutorial.com/Introduction](https://vulkan-tutorial.com/Introduction)
 - [https://www.youtube.com/playlist?list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR](https://www.youtube.com/playlist?list=PL8327DO66nu9qYVKLDmdLW_84-yE4auCR)
+- [https://kylehalladay.com/blog/tutorial/2017/12/13/Custom-Allocators-Vulkan.html](https://kylehalladay.com/blog/tutorial/2017/12/13/Custom-Allocators-Vulkan.html)

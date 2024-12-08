@@ -2,6 +2,8 @@
 
 #include "file/read.h"
 
+#include "model.h"
+
 #include <iostream>
 #include <cassert>
 
@@ -36,12 +38,14 @@ Pipeline::Pipeline(Device& device, const Config& config, const std::string& vert
     shader_stages[1].pNext = nullptr;
     shader_stages[1].pSpecializationInfo = nullptr;
 
+    auto binding_descriptions = Model::Vertex::get_binding_descriptions();
+    auto attribute_descriptions = Model::Vertex::get_attribute_descriptions();
     VkPipelineVertexInputStateCreateInfo vertex_input{};
     vertex_input.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertex_input.vertexAttributeDescriptionCount = 0;
-    vertex_input.vertexBindingDescriptionCount = 0;
-    vertex_input.pVertexAttributeDescriptions = nullptr;
-    vertex_input.pVertexBindingDescriptions = nullptr;
+    vertex_input.vertexBindingDescriptionCount = binding_descriptions.size();
+    vertex_input.vertexAttributeDescriptionCount = attribute_descriptions.size();
+    vertex_input.pVertexBindingDescriptions = binding_descriptions.data();
+    vertex_input.pVertexAttributeDescriptions = attribute_descriptions.data();
 
     VkPipelineViewportStateCreateInfo viewport_info{};
     viewport_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;

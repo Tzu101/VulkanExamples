@@ -28,6 +28,7 @@ target_sources(VulkanTest PRIVATE
     libs/engine/device.cpp
     libs/engine/pipeline.cpp
     libs/engine/swap_chain.cpp
+    libs/engine/model.cpp
 )
 
 # Packages

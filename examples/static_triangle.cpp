@@ -6,6 +6,7 @@
 StaticTriangle::StaticTriangle()
 : gui::App("Static Triangle")
 {
+    load_models();
     create_pipeline_layout();
     create_pipeline();
     create_command_buffers();
@@ -15,7 +16,7 @@ StaticTriangle::~StaticTriangle() {
     vkDestroyPipelineLayout(device.device(), pipeline_layout, nullptr);
 }
 
-void StaticTriangle::update() {
+void StaticTriangle::draw() {
     uint32_t image_index;
     auto result = swap_chain.acquireNextImage(&image_index);
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
@@ -26,6 +27,16 @@ void StaticTriangle::update() {
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed present swap chain image");
     }
+}
+
+
+void StaticTriangle::load_models() {
+    std::vector<engine::Model::Vertex> vertices {
+        {{0.0f, -0.5f}},
+        {{0.5f, 0.5f}},
+        {{-0.5f, 0.5f}},
+    };
+    triangle_model = std::make_unique<engine::Model>(device, vertices);
 }
 
 void StaticTriangle::create_pipeline_layout() {
@@ -90,7 +101,11 @@ void StaticTriangle::create_command_buffers() {
         render_pass_info.pClearValues = clear_values.data();
 
         vkCmdBeginRenderPass(command_buffers[i], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+
         pipeline->bind(command_buffers[i]);
+        triangle_model->bind(command_buffers[i]);
+        triangle_model->draw(command_buffers[i]);
+
         vkCmdDraw(command_buffers[i], 3, 1, 0, 0);
 
         vkCmdEndRenderPass(command_buffers[i]);

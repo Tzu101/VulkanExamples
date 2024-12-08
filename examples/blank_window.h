@@ -7,5 +7,5 @@ public:
     BlankWindow();
 
 protected:
-    void update() override;
+    void draw() override;
 };

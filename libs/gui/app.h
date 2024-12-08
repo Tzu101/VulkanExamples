@@ -16,7 +16,7 @@ protected:
     Window window;
     engine::Device device{window};
 
-    virtual void update() = 0;
+    virtual void draw() = 0;
 
 private:
     static constexpr int DEFAULT_WINDOW_WIDTH = 800;
