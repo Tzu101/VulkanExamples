@@ -32,13 +32,13 @@ void Model::create_vertext_buffers(const std::vector<Vertex> &vertices) {
 }
 
 void Model::bind(VkCommandBuffer command_buffer) {
-    vkCmdDraw(command_buffer, vertex_count, 1, 0, 0);
-}
-
-void Model::draw(VkCommandBuffer command_buffer) {
     VkBuffer buffers[] = {vertex_buffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(command_buffer, 0, 1, buffers, offsets);
+}
+
+void Model::draw(VkCommandBuffer command_buffer) {
+    vkCmdDraw(command_buffer, vertex_count, 1, 0, 0);
 }
 
 std::vector<VkVertexInputBindingDescription> Model::Vertex::get_binding_descriptions()
