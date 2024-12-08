@@ -22,9 +22,11 @@ public:
     const int width() {
         return WIDTH;
     }
-
     const int height() {
         return HEIGHT;
+    }
+    VkExtent2D get_extent() const {
+        return { static_cast<uint32_t>(WIDTH), static_cast<uint32_t>(HEIGHT) };
     }
 
 private:

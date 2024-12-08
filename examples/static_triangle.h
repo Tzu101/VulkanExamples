@@ -4,19 +4,28 @@
 
 #include "engine/device.h"
 #include "engine/pipeline.h"
+#include "engine/swap_chain.h"
+
+#include <vector>
+#include <memory>
 
 class StaticTriangle: public gui::App {
-    using gui::App::App;
+    //using gui::App::App;
+public:
+    StaticTriangle();
+    ~StaticTriangle();
 
 protected:
     void update() override;
 
 private:
     engine::Device device{window};
-    engine::Pipeline pipeline{
-        device, 
-        engine::Pipeline::Config::get_default(window.width(), window.height()), 
-        "shaders/static_triangle.vert.spv", 
-        "shaders/static_triangle.frag.spv"
-    };
+    engine::SwapChain swap_chain{device, window.get_extent()};
+    std::unique_ptr<engine::Pipeline> pipeline;
+    VkPipelineLayout pipeline_layout;
+    std::vector<VkCommandBuffer> command_buffer;
+
+   void create_pipeline_layout();
+   void create_pipeline();
+   void create_command_buffers();
 };

@@ -3,6 +3,6 @@
 #include "static_triangle.h"
 
 int main() {
-    StaticTriangle app("My static triangle exmaple");
+    StaticTriangle app{};
     app.run();
 }

@@ -25,8 +25,9 @@ target_sources(VulkanTest PRIVATE
     libs/file/read.cpp
     libs/gui/window.cpp
     libs/gui/app.cpp
-    libs/engine/pipeline.cpp
     libs/engine/device.cpp
+    libs/engine/pipeline.cpp
+    libs/engine/swap_chain.cpp
 )
 
 # Packages
