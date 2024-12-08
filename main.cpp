@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "blank_window.h"
+#include "static_triangle.h"
 
 int main() {
-    BlankWindow app("Test");
+    StaticTriangle app("My static triangle exmaple");
     app.run();
 }

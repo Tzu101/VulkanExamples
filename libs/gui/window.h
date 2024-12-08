@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dev/rei.h"
+#include "dev/out.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -16,10 +17,19 @@ public:
     IMPLEMENT_REI(Window);
 
     bool closed();
+    void create_surface(VkInstance instance, OUT VkSurfaceKHR& surface);
+
+    const int width() {
+        return WIDTH;
+    }
+
+    const int height() {
+        return HEIGHT;
+    }
 
 private:
-    const int width;
-    const int height;
+    const int WIDTH;
+    const int HEIGHT;
     const std::string name;
 
     GLFWwindow* window = nullptr;
