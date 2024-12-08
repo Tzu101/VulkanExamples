@@ -3,6 +3,11 @@
 #include "static_triangle.h"
 
 int main() {
-    StaticTriangle app{};
-    app.run();
+    try {
+        StaticTriangle app{};
+        app.run();
+    }
+    catch (std::runtime_error err) {
+        std::cerr << err.what() << std::endl;
+    }
 }

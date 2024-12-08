@@ -2,6 +2,8 @@
 
 #include "window.h"
 
+#include "engine/device.h"
+
 namespace gui {
 
 class App {
@@ -12,6 +14,7 @@ public:
 
 protected:
     Window window;
+    engine::Device device{window};
 
     virtual void update() = 0;
 

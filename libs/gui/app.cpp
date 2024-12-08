@@ -13,6 +13,8 @@ void App::run() {
         glfwPollEvents();
         update();
     }
+
+    vkDeviceWaitIdle(device.device());
 }
 
 void App::update() {

@@ -2,7 +2,6 @@
 
 #include "gui/app.h"
 
-#include "engine/device.h"
 #include "engine/pipeline.h"
 #include "engine/swap_chain.h"
 
@@ -19,7 +18,6 @@ protected:
     void update() override;
 
 private:
-    engine::Device device{window};
     engine::SwapChain swap_chain{device, window.get_extent()};
     std::unique_ptr<engine::Pipeline> pipeline;
     VkPipelineLayout pipeline_layout;

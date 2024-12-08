@@ -69,7 +69,7 @@ void StaticTriangle::create_command_buffers() {
 
     for (int i = 0; i < command_buffers.size(); i++) {
         VkCommandBufferBeginInfo begin_info{};
-        allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
         if (vkBeginCommandBuffer(command_buffers[i], &begin_info) != VK_SUCCESS) {
             throw std::runtime_error("Failed to begin recoring command buffer");

@@ -9,7 +9,7 @@ std::vector<char> to_binary(const std::string& file_path) {
     std::ifstream file(file_path, std::ios::ate | std::ios::binary);
 
     if (not file.is_open()) {
-        throw std::runtime_error("Failed to topen file: " + file_path);
+        throw std::runtime_error("Failed to to open file: " + file_path);
     }
 
     size_t file_size = static_cast<size_t>(file.tellg());
