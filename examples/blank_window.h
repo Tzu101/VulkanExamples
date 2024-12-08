@@ -3,7 +3,8 @@
 #include "gui/app.h"
 
 class BlankWindow: public gui::App {
-    using gui::App::App;
+public:
+    BlankWindow();
 
 protected:
     void update() override;

@@ -23,7 +23,7 @@ private:
     engine::SwapChain swap_chain{device, window.get_extent()};
     std::unique_ptr<engine::Pipeline> pipeline;
     VkPipelineLayout pipeline_layout;
-    std::vector<VkCommandBuffer> command_buffer;
+    std::vector<VkCommandBuffer> command_buffers;
 
    void create_pipeline_layout();
    void create_pipeline();

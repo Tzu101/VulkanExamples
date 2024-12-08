@@ -31,6 +31,8 @@ public:
     ~Pipeline();
     IMPLEMENT_REI(Pipeline);
 
+    void bind(VkCommandBuffer command_buffer);
+
 private:
     Device& device;
     VkPipeline pipeline;

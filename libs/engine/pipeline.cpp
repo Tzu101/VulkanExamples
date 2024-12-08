@@ -81,6 +81,10 @@ Pipeline::~Pipeline() {
     vkDestroyPipeline(device.device(), pipeline, nullptr);
 }
 
+void Pipeline::bind(VkCommandBuffer command_buffer) {
+    vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+}
+
 void Pipeline::create_shader(const std::vector<char>& shader_binary, OUT VkShaderModule &shader) {
     VkShaderModuleCreateInfo shader_info{};
     shader_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
