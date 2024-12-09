@@ -2,12 +2,15 @@
 
 #include "device.h"
 
+#include "dev/rei.h"
+
 // vulkan headers
 #include <vulkan/vulkan.h>
 
 // std lib headers
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace engine {
 
@@ -15,11 +18,12 @@ class SwapChain {
  public:
   static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-  SwapChain(Device &deviceRef, VkExtent2D windowExtent);
+  SwapChain(Device &deviceRef, VkExtent2D window_extent);
+  SwapChain(Device &deviceRef, VkExtent2D window_extent, std::shared_ptr<SwapChain> previous_swap_chain);
   ~SwapChain();
+  IMPLEMENT_REI(SwapChain);
 
-  SwapChain(const SwapChain &) = delete;
-  void operator=(const SwapChain &) = delete;
+  void init();
 
   VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
   VkRenderPass getRenderPass() { return renderPass; }
@@ -69,6 +73,7 @@ class SwapChain {
   VkExtent2D windowExtent;
 
   VkSwapchainKHR swapChain;
+  std::shared_ptr<SwapChain> old_swap_chain;
 
   std::vector<VkSemaphore> imageAvailableSemaphores;
   std::vector<VkSemaphore> renderFinishedSemaphores;

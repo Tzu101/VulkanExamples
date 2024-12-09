@@ -6,6 +6,7 @@
 SierpinskiTriangle::SierpinskiTriangle()
 : gui::App("Sierpiński Triangle")
 {
+    // TODO Not currently working / conflic with dynamic window settings
     load_sierpinski_model();
     create_pipeline_layout();
     create_pipeline();
@@ -76,7 +77,18 @@ void SierpinskiTriangle::create_pipeline_layout() {
 }
 
 void SierpinskiTriangle::create_pipeline() {
-    auto pipeline_config = engine::Pipeline::Config::get_default(swap_chain.width(), swap_chain.height());
+    engine::Pipeline::Config pipeline_config{};
+    engine::Pipeline::Config::default_config(pipeline_config);
+
+    /*pipeline_config.viewport.x = 0.0f;
+    pipeline_config.viewport.y = 0.0f;
+    pipeline_config.viewport.width = static_cast<float>(window.get_width());
+    pipeline_config.viewport.height = static_cast<float>(window.get_height());
+    pipeline_config.viewport.minDepth = 0.0f;
+    pipeline_config.viewport.maxDepth = 1.0f;
+    pipeline_config.scissor.offset = {0, 0};
+    pipeline_config.scissor.extent = {window.get_width(), window.get_height()};*/
+
     pipeline_config.render_pass = swap_chain.getRenderPass();
     pipeline_config.pipeline_layout = pipeline_layout;
 

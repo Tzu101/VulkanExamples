@@ -8,7 +8,7 @@ StaticTriangle::StaticTriangle()
 {
     load_models();
     create_pipeline_layout();
-    create_pipeline();
+    recreate_swap_chain();
     create_command_buffers();
 }
 
@@ -18,12 +18,26 @@ StaticTriangle::~StaticTriangle() {
 
 void StaticTriangle::draw() {
     uint32_t image_index;
-    auto result = swap_chain.acquireNextImage(&image_index);
-    if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    auto result = swap_chain->acquireNextImage(&image_index);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        recreate_swap_chain();
+        return;
+    }
+
+    if (result != VK_SUCCESS and result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed to accuire swap chain image");
     }
 
-    result = swap_chain.submitCommandBuffers(&command_buffers[image_index], &image_index);
+    record_command_buffer(image_index);
+    result = swap_chain->submitCommandBuffers(&command_buffers[image_index], &image_index);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR or result == VK_SUBOPTIMAL_KHR or window.was_resized()) {
+        window.resize_registered();
+        recreate_swap_chain();
+        return;
+    }
+
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed present swap chain image");
     }
@@ -53,8 +67,9 @@ void StaticTriangle::create_pipeline_layout() {
 }
 
 void StaticTriangle::create_pipeline() {
-    auto pipeline_config = engine::Pipeline::Config::get_default(swap_chain.width(), swap_chain.height());
-    pipeline_config.render_pass = swap_chain.getRenderPass();
+    engine::Pipeline::Config pipeline_config{};
+    engine::Pipeline::Config::default_config(pipeline_config);
+    pipeline_config.render_pass = swap_chain->getRenderPass();
     pipeline_config.pipeline_layout = pipeline_layout;
 
     pipeline = std::make_unique<engine::Pipeline>(
@@ -66,7 +81,7 @@ void StaticTriangle::create_pipeline() {
 }
 
 void StaticTriangle::create_command_buffers() {
-    command_buffers.resize(swap_chain.imageCount());
+    command_buffers.resize(swap_chain->imageCount());
 
     VkCommandBufferAllocateInfo allocate_info{};
     allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -79,38 +94,79 @@ void StaticTriangle::create_command_buffers() {
     }
 
     for (int i = 0; i < command_buffers.size(); i++) {
-        VkCommandBufferBeginInfo begin_info{};
-        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        record_command_buffer(i);
+    }
+}
 
-        if (vkBeginCommandBuffer(command_buffers[i], &begin_info) != VK_SUCCESS) {
-            throw std::runtime_error("Failed to begin recoring command buffer");
+void StaticTriangle::free_command_buffers() {
+    vkFreeCommandBuffers(device.device(), device.getCommandPool(), command_buffers.size(), command_buffers.data());
+    command_buffers.clear();
+}
+
+void StaticTriangle::recreate_swap_chain() {
+    while (not window.has_size()) {
+        glfwWaitEvents();
+    }
+    vkDeviceWaitIdle(device.device());
+
+    if (swap_chain == nullptr) {
+        swap_chain = std::make_unique<engine::SwapChain>(device, window.get_extent());
+    }
+    else {
+        swap_chain = std::make_unique<engine::SwapChain>(device, window.get_extent(), std::move(swap_chain));
+        if (swap_chain->imageCount() != command_buffers.size()) {
+            free_command_buffers();
+            create_command_buffers();
         }
+    }
 
-        VkRenderPassBeginInfo render_pass_info{};
-        render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        render_pass_info.renderPass = swap_chain.getRenderPass();
-        render_pass_info.framebuffer = swap_chain.getFrameBuffer(i);
+    // TODO check for compatible render passes
+    create_pipeline();
+}
 
-        render_pass_info.renderArea.offset = {0, 0};
-        render_pass_info.renderArea.extent = swap_chain.getSwapChainExtent();
+void StaticTriangle::record_command_buffer(int image_index) {
+    VkCommandBufferBeginInfo begin_info{};
+    begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-        std::array<VkClearValue, 2> clear_values{};
-        clear_values[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
-        clear_values[1].depthStencil = {1.0f, 0};
-        render_pass_info.clearValueCount = clear_values.size();
-        render_pass_info.pClearValues = clear_values.data();
+    if (vkBeginCommandBuffer(command_buffers[image_index], &begin_info) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to begin recoring command buffer");
+    }
 
-        vkCmdBeginRenderPass(command_buffers[i], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+    VkRenderPassBeginInfo render_pass_info{};
+    render_pass_info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    render_pass_info.renderPass = swap_chain->getRenderPass();
+    render_pass_info.framebuffer = swap_chain->getFrameBuffer(image_index);
 
-        pipeline->bind(command_buffers[i]);
-        triangle_model->bind(command_buffers[i]);
-        triangle_model->draw(command_buffers[i]);
+    render_pass_info.renderArea.offset = {0, 0};
+    render_pass_info.renderArea.extent = swap_chain->getSwapChainExtent();
 
-        vkCmdDraw(command_buffers[i], 3, 1, 0, 0);
+    std::array<VkClearValue, 2> clear_values{};
+    clear_values[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
+    clear_values[1].depthStencil = {1.0f, 0};
+    render_pass_info.clearValueCount = clear_values.size();
+    render_pass_info.pClearValues = clear_values.data();
 
-        vkCmdEndRenderPass(command_buffers[i]);
-        if (vkEndCommandBuffer(command_buffers[i]) != VK_SUCCESS) {
-            throw std::runtime_error("Failed to record command buffer");
-        }
+    vkCmdBeginRenderPass(command_buffers[image_index], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(swap_chain->getSwapChainExtent().width);
+    viewport.height = static_cast<float>(swap_chain->getSwapChainExtent().height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    VkRect2D scissor{{0, 0}, swap_chain->getSwapChainExtent()};
+    vkCmdSetViewport(command_buffers[image_index], 0, 1, &viewport);
+    vkCmdSetScissor(command_buffers[image_index], 0, 1, &scissor);
+
+    pipeline->bind(command_buffers[image_index]);
+    triangle_model->bind(command_buffers[image_index]);
+    triangle_model->draw(command_buffers[image_index]);
+
+    vkCmdDraw(command_buffers[image_index], 3, 1, 0, 0);
+
+    vkCmdEndRenderPass(command_buffers[image_index]);
+    if (vkEndCommandBuffer(command_buffers[image_index]) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to record command buffer");
     }
 }
