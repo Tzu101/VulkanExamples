@@ -17,6 +17,7 @@ target_include_directories(VulkanTest PRIVATE ${PROJECT_SOURCE_DIR}/examples)
 target_sources(VulkanTest PRIVATE
     examples/blank_window.cpp
     examples/static_triangle.cpp
+    examples/sierpinski_triangle.cpp
 )
 
 # Libs
