@@ -32,9 +32,9 @@ void StaticTriangle::draw() {
 
 void StaticTriangle::load_models() {
     std::vector<engine::Model::Vertex> vertices {
-        {{0.0f, -0.5f}},
-        {{0.5f, 0.5f}},
-        {{-0.5f, 0.5f}},
+        {{0.0f, -0.5f}, {1, 1, 0}},
+        {{0.5f, 0.5f}, {1, 0, 1}},
+        {{-0.5f, 0.5f}, {0, 1, 1}},
     };
     triangle_model = std::make_unique<engine::Model>(device, vertices);
 }

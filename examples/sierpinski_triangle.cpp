@@ -84,7 +84,7 @@ void SierpinskiTriangle::create_pipeline() {
         device, 
         pipeline_config, 
         "shaders/static_triangle.vert.spv", 
-        "shaders/static_triangle.frag.spv"
+        "shaders/sierpinski_triangle.frag.spv"
     );
 }
 

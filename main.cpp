@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "sierpinski_triangle.h"
+#include "static_triangle.h"
 
 int main() {
     try {
-        SierpinskiTriangle app{};
+        StaticTriangle app{};
         app.run();
     }
     catch (std::runtime_error err) {
