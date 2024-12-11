@@ -10,15 +10,14 @@
 #include <memory>
 
 class StaticTriangle: public gui::App {
-    //using gui::App::App;
 public:
     StaticTriangle();
+    StaticTriangle(const std::string& title);
     ~StaticTriangle();
 
 protected:
     void draw() override;
 
-private:
     std::unique_ptr<engine::SwapChain> swap_chain;
     std::unique_ptr<engine::Pipeline> pipeline;
     VkPipelineLayout pipeline_layout;
