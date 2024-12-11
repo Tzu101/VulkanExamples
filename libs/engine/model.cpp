@@ -38,7 +38,7 @@ void Model::bind(VkCommandBuffer command_buffer) {
 }
 
 void Model::draw(VkCommandBuffer command_buffer) {
-    vkCmdDraw(command_buffer, vertex_count, 1, 0, 0);
+    vkCmdDraw(command_buffer, vertex_count, 2, 0, 0);
 }
 
 std::vector<VkVertexInputBindingDescription> Model::Vertex::get_binding_descriptions()
