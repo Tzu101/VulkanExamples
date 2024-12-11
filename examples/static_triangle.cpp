@@ -1,7 +1,16 @@
 #include "static_triangle.h"
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 #include <array>
 #include <stdexcept>
+
+struct PushConst {
+    glm::vec2 offset;
+    alignas(16) glm::vec3 color;
+};
 
 StaticTriangle::StaticTriangle()
 : gui::App("Static Triangle")
@@ -47,7 +56,6 @@ void StaticTriangle::draw() {
     }
 }
 
-
 void StaticTriangle::load_models() {
     std::vector<engine::Model::Vertex> vertices {
         {{0.0f, -0.5f}, {1, 0, 0}},
@@ -59,12 +67,17 @@ void StaticTriangle::load_models() {
 }
 
 void StaticTriangle::create_pipeline_layout() {
+    VkPushConstantRange push_const_range{};
+    push_const_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    push_const_range.offset = 0;
+    push_const_range.size = sizeof(PushConst);
+
     VkPipelineLayoutCreateInfo pipeline_layout_info{};
     pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipeline_layout_info.setLayoutCount = 0;
     pipeline_layout_info.pSetLayouts = nullptr;
-    pipeline_layout_info.pushConstantRangeCount = 0;
-    pipeline_layout_info.pPushConstantRanges = nullptr;
+    pipeline_layout_info.pushConstantRangeCount = 1;
+    pipeline_layout_info.pPushConstantRanges = &push_const_range;
 
     if (vkCreatePipelineLayout(device.device(), &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create pipeline layout!");
@@ -146,7 +159,7 @@ void StaticTriangle::record_command_buffer(int image_index) {
     render_pass_info.renderArea.extent = swap_chain->getSwapChainExtent();
 
     std::array<VkClearValue, 2> clear_values{};
-    clear_values[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
+    clear_values[0].color = {0.01f, 0.01f, 0.01f, 1.0f};
     clear_values[1].depthStencil = {1.0f, 0};
     render_pass_info.clearValueCount = clear_values.size();
     render_pass_info.pClearValues = clear_values.data();
@@ -166,7 +179,18 @@ void StaticTriangle::record_command_buffer(int image_index) {
 
     pipeline->bind(command_buffers[image_index]);
     triangle_model->bind(command_buffers[image_index]);
-    triangle_model->draw(command_buffers[image_index]);
+
+    for (int j = 0; j < 4; j++) {
+        PushConst push_const{};
+        push_const.offset = {0, -0.4 + j * 0.25f};
+        push_const.color = {0.3f * j, 0.1f, 0.2f + 0.2f * j};
+
+        vkCmdPushConstants(
+            command_buffers[image_index], pipeline_layout, 
+            VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 
+            0, sizeof(PushConst), &push_const);
+        triangle_model->draw(command_buffers[image_index]);
+    }
 
     vkCmdDraw(command_buffers[image_index], 3, 1, 0, 0);
 

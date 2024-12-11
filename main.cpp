@@ -5,8 +5,7 @@
 
 int main() {
     try {
-        SierpinskiTriangle app{};
-        //StaticTriangle app{};
+        StaticTriangle app{};
         app.run();
     }
     catch (std::runtime_error err) {
