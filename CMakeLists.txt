@@ -15,21 +15,13 @@ add_executable(VulkanTest main.cpp)
 # Examples
 target_include_directories(VulkanTest PRIVATE ${PROJECT_SOURCE_DIR}/examples)
 target_sources(VulkanTest PRIVATE
-    examples/blank_window.cpp
-    examples/static_triangle.cpp
-    examples/sierpinski_triangle.cpp
+    examples/blank_window/blank_window.cpp
 )
 
 # Libs
 target_include_directories(VulkanTest PRIVATE ${PROJECT_SOURCE_DIR}/libs)
 target_sources(VulkanTest PRIVATE
     libs/file/read.cpp
-    libs/gui/window.cpp
-    libs/gui/app.cpp
-    libs/engine/device.cpp
-    libs/engine/pipeline.cpp
-    libs/engine/swap_chain.cpp
-    libs/engine/model.cpp
 )
 
 # Packages
@@ -44,9 +36,6 @@ target_link_libraries(VulkanTest PRIVATE glfw)
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(VulkanTest PRIVATE glm::glm)
 
-find_package(glslang CONFIG REQUIRED)
-target_link_libraries(VulkanTest PRIVATE glslang::glslang glslang::glslang-default-resource-limits glslang::SPIRV glslang::SPVRemapper)
-
 # Shaders
 info("Glsl compiler: ${GLSL_COMPILER}")
-compile_shaders("shaders")
+compile_shaders("examples")

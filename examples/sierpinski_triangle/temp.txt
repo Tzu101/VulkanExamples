@@ -1,14 +1,3 @@
-#include "sierpinski_triangle.h"
-
-SierpinskiTriangle::SierpinskiTriangle()
-: StaticTriangle("Sierpiński triangle")
-{
-    load_sierpinski_model();
-    create_pipeline_layout();
-    recreate_swap_chain();
-    create_command_buffers();
-}
-
 void SierpinskiTriangle::load_sierpinski_model() {
     std::vector<engine::Model::Vertex> vertices {
         {{0.0f, -0.5f}, {1, 0, 0}},
