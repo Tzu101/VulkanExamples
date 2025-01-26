@@ -16,6 +16,7 @@ add_executable(VulkanTest main.cpp)
 target_include_directories(VulkanTest PRIVATE ${PROJECT_SOURCE_DIR}/examples)
 target_sources(VulkanTest PRIVATE
     examples/blank_window/blank_window.cpp
+    examples/triangle/triangle.cpp
 )
 
 # Libs
